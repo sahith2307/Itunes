@@ -20,7 +20,26 @@ export const selectedReducer = (state = selectedValues, action) => {
       return { ...state, genre: action.genre };
     default:
       return state;
-      
   }
 };
+export const myLog = (store) => (next) => (action) => {
+  console.log("life sucks");
+  return next(action);
+};
+export const secondMiddle = (store) => (next) => (action) => {
+  console.log("life sucks secoundMiddle");
+  return next(action);
+};
+export const myAction = (store) => (next) => (action) => {
+  console.log(store.getState().secondReducer);  
+  return next(action);
+};
+// export const myLog = (store) => {
+//   return (next) => {
+//     return (action) => {
+//       console.log("life sucks");
+//       return next(action);
+//     };
+//   };
+// };
 export default storeReducer;

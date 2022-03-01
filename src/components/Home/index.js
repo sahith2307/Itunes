@@ -1,11 +1,14 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Select from "react-select";
 import TrackItem from "../TrackItem";
+import { fetchCountries } from "../../actions";
 import "./index.scss";
+
 export default function Home() {
   const [searched, setSearched] = useState("");
+  const refered = useRef();
   const [data, error, region, genres, selectedGenre, selectedCountry] =
     useSelector((state) => [
       state.firstReducer.data,
@@ -15,9 +18,9 @@ export default function Home() {
       state.secondReducer.genre,
       state.secondReducer.country,
     ]);
+
   const dispatcher = useDispatch();
   const setCountry = (selectedCountry) => {
-    console.log(selectedCountry.value);
     dispatcher({ type: "Country", country: selectedCountry.value });
     //used dispatched
   };
@@ -25,32 +28,12 @@ export default function Home() {
     dispatcher({ type: "Genre", genre: selectedGenre.value });
   };
   useEffect(() => {
-    const options = {
-      method: "GET",
-      url: "https://world-countries.p.rapidapi.com/all",
-      headers: {
-        "x-rapidapi-host": "world-countries.p.rapidapi.com",
-        "x-rapidapi-key": "cf68cbb787mshaa6b02c7de7c9a2p1f5e2cjsn155b2aff907c",
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        dispatcher({
-          type: "Region",
-          region: response.data.map((each) => {
-            return {
-              value: each.alpha2,
-              label: each.en,
-            };
-          }),
-        });
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    dispatcher(fetchCountries());
   }, []);
+  const copyTheText = () => {
+    refered.current.select();
+    navigator.clipboard.writeText(searched);
+  };
 
   const getSearchedData = () => {
     const url = `https://itunes.apple.com/search?term=${searched}&entity=${selectedGenre}&country=${selectedCountry}`;
@@ -70,6 +53,7 @@ export default function Home() {
       </div>
       <div className="col-12 d-flex flex-row justify-content-center">
         <input
+          ref={refered}
           className="col-5"
           type="search"
           onChange={(e) => {
@@ -94,7 +78,7 @@ export default function Home() {
           Search
         </button>
       </div>
-
+      <button onClick={copyTheText}>OnclickBlur</button>
       <div className=" d-flex flex-row justify-content-start flex-wrap">
         {data?.map((each) => (
           <TrackItem key={each.trackId} data={each} />

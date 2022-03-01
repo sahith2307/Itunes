@@ -1,5 +1,14 @@
-import { combineReducers, createStore } from "redux";
-import storeReducer, { selectedReducer } from "./reducer";
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import thunk from "redux-thunk";
+import storeReducer, {
+  selectedReducer,
+  myLog,
+  secondMiddle,
+  myAction,
+} from "./reducer";
+import { composeWithDevTools } from "redux-devtools-extension";
+import logger from "redux-logger";
+
 export const store = {
   data: [],
   genres: [
@@ -17,12 +26,19 @@ export const store = {
   region: [],
   error: "",
 };
+
+const extension = () => {
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+};
 export const selectedValues = { country: "", genre: "" };
 const CreatedStore = createStore(
   combineReducers({
     firstReducer: storeReducer,
     secondReducer: selectedReducer,
   }),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeWithDevTools(
+    applyMiddleware(myLog, secondMiddle, myAction, logger, thunk)
+  ),
+  extension()
 );
 export default CreatedStore;

@@ -24,6 +24,7 @@ export const store = {
     { value: "all", label: "all" },
   ],
   region: [],
+  regionError: "",
   error: "",
 };
 

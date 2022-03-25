@@ -5,6 +5,8 @@ const storeReducer = (state = store, action) => {
       return { ...state, data: action.data, error: "" };
     case "Region":
       return { ...state, region: action.region };
+    case "Region-error":
+      return { ...state, regionError: action.regionError, region: [] };
 
     case "Error":
       return { ...state, data: [], error: action.error };
@@ -31,9 +33,12 @@ export const secondMiddle = (store) => (next) => (action) => {
   return next(action);
 };
 export const myAction = (store) => (next) => (action) => {
-  console.log(store.getState().secondReducer);  
+  console.log(store.getState().secondReducer);
   return next(action);
 };
+
+//*another way of middleware function*
+
 // export const myLog = (store) => {
 //   return (next) => {
 //     return (action) => {
